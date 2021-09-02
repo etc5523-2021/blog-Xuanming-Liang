@@ -1,0 +1,42 @@
+---
+title: "Singapore"
+listing: posts
+---
+
+```{r eval = FALSE}
+library(tidyverse)
+library(gt)
+library(DT)
+```
+# Singapore
+![](sg1.jpg){width=50}
+
+Here are some relevant data on COVID-19 in Singapore, including total (new) cases per day, total (new) deaths per day, the total number of people tested and the total number of people vaccinated. 
+
+```{r eval=FALSE}
+dat <- read.csv("data/owid-covid-data.csv")
+```
+
+```{r eval=FALSE}
+sg <- dat %>% 
+  select(iso_code,
+         location,
+         date,
+         total_cases,
+         new_cases,
+         total_deaths,
+         new_deaths,
+         total_vaccinations,
+         total_tests) %>% 
+  filter(iso_code == "SGP")
+```
+
+```{r eval=FALSE}
+sg1 <- sg %>% 
+  select(-iso_code,
+         -location)
+DT::datatable(sg1, options = list(pageLength = 5))
+```
+
+The above table shows the date, total number of cases, number of new cases per day, the total number of deaths, number of new deaths per day, total number of vaccinations and the total number of people tested for COVID-19 respectively. For various reasons, the data collected contains unknown values, all unknown values will not be shown and are blank. In the table, you can find data on the number of new cases or deaths on a specific date that you want to know.
+
