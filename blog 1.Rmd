@@ -1,23 +1,48 @@
 ---
-title: "Singapore"
-listing: posts
+title: "The COVID-19 in Singapore"
+output: 
+  distill::distill_article
 ---
 
-```{r eval = FALSE}
+```{r echo=FALSE}
 library(tidyverse)
 library(gt)
 library(DT)
 ```
-# Singapore
+
+
 ![](sg1.jpg){width=50}
+
+
+
+# Data description
+
+Data from [Our World in Data](https://ourworldindata.org/coronavirus).
+
+After screening the data contains the following variables:
+
+|**variable**      |**class**  |**description**                                |
+|:-----------------|:----------|:----------------------------------------------|
+|iso_code          | character | Country code as defined by ISO 3166-1 alpha-3 |
+|location          | character | Country name                                  |
+|date              | character | Calendar date                                 |
+|total_cases       | double    | COVID-19 total case                           |
+|new_cases         | double    | COVID-19 daily increase case                  |
+|total_deaths      | double    | COVID-19 total deaths                         |
+|new_deaths        | double    | COVID-19 new daily deaths                     |
+|total_vaccinations| double    | COVID-19 Total number of people vaccinated    |
+|total_tests       | double    | Total number of people tested for COVID-19    |
+
+
+# Analysis & Summary
 
 Here are some relevant data on COVID-19 in Singapore, including total (new) cases per day, total (new) deaths per day, the total number of people tested and the total number of people vaccinated. 
 
-```{r eval=FALSE}
+```{r echo=FALSE}
 dat <- read.csv("data/owid-covid-data.csv")
 ```
 
-```{r eval=FALSE}
+```{r echo=FALSE}
 sg <- dat %>% 
   select(iso_code,
          location,
@@ -31,12 +56,16 @@ sg <- dat %>%
   filter(iso_code == "SGP")
 ```
 
-```{r eval=FALSE}
+```{r echo=FALSE}
 sg1 <- sg %>% 
   select(-iso_code,
          -location)
-DT::datatable(sg1, options = list(pageLength = 5))
+DT::datatable(sg1, options = list(pageLength = 5), caption = "Singapore Daily COVID19 Case")
 ```
 
 The above table shows the date, total number of cases, number of new cases per day, the total number of deaths, number of new deaths per day, total number of vaccinations and the total number of people tested for COVID-19 respectively. For various reasons, the data collected contains unknown values, all unknown values will not be shown and are blank. In the table, you can find data on the number of new cases or deaths on a specific date that you want to know.
+
+```{r echo=FALSE}
+
+```
 

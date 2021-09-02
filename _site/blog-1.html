@@ -86,26 +86,26 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Singapore COVID-19: Singapore</title>
+  <title>Ricky's Blog: The COVID-19 in Singapore</title>
 
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Singapore COVID-19: Singapore"/>
+  <meta property="og:title" content="Ricky&#39;s Blog: The COVID-19 in Singapore"/>
   <meta property="og:type" content="article"/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Singapore COVID-19"/>
+  <meta property="og:site_name" content="Ricky&#39;s Blog"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Singapore COVID-19: Singapore"/>
+  <meta property="twitter:title" content="Ricky&#39;s Blog: The COVID-19 in Singapore"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","listing"]}},"value":[{"type":"character","attributes":{},"value":["Singapore"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","listing"]}},"value":[{"type":"character","attributes":{},"value":["The COVID-19 in Singapore"]},{"type":"character","attributes":{},"value":["posts"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2366,7 +2366,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Singapore","authors":[]}
+{"title":"The COVID-19 in Singapore","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2374,12 +2374,15 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <header class="header header--fixed" role="banner">
 <nav class="distill-site-nav distill-site-header">
 <div class="nav-left">
-<a href="index.html" class="title">Singapore COVID-19</a>
+<a href="index.html" class="title">Ricky's Blog</a>
 <input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
 </div>
 <div class="nav-right">
 <a href="index.html">Home</a>
 <a href="blog-1.html">Blog 1</a>
+<a href="https://github.com/etc5523-2021/blog-Xuanming-Liang">
+<i class="fab fa-github" aria-hidden="true"></i>
+</a>
 <a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
 </div>
 </nav>
@@ -2521,7 +2524,7 @@ function init_posts_list() {
 
 <div class="posts-container posts-apply-limit l-page">
 <div class="posts-list">
-<h1 class="posts-list-caption" data-caption="Singapore">Singapore</h1>
+<h1 class="posts-list-caption" data-caption="The COVID-19 in Singapore">The COVID-19 in Singapore</h1>
 </div>
 <div class="posts-more">
 <a href="#">More articles &raquo;</a>
@@ -2530,7 +2533,7 @@ function init_posts_list() {
 <!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
-<h1>Singapore</h1>
+<h1>The COVID-19 in Singapore</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
 
@@ -2538,49 +2541,6 @@ function init_posts_list() {
 
 
 <div class="d-article">
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://gt.rstudio.com/'>gt</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/rstudio/DT'>DT</a></span><span class='op'>)</span>
-</code></pre>
-</div>
-</div>
-<h1 id="singapore">Singapore</h1>
-<p><img src="sg1.jpg" width="50" /></p>
-<p>Here are some relevant data on COVID-19 in Singapore, including total (new) cases per day, total (new) deaths per day, the total number of people tested and the total number of people vaccinated.</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.csv</a></span><span class='op'>(</span><span class='st'>"data/owid-covid-data.csv"</span><span class='op'>)</span>
-</code></pre>
-</div>
-</div>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>sg</span> <span class='op'>&lt;-</span> <span class='va'>dat</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>select</span><span class='op'>(</span><span class='va'>iso_code</span>,
-         <span class='va'>location</span>,
-         <span class='va'>date</span>,
-         <span class='va'>total_cases</span>,
-         <span class='va'>new_cases</span>,
-         <span class='va'>total_deaths</span>,
-         <span class='va'>new_deaths</span>,
-         <span class='va'>total_vaccinations</span>,
-         <span class='va'>total_tests</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>iso_code</span> <span class='op'>==</span> <span class='st'>"SGP"</span><span class='op'>)</span>
-</code></pre>
-</div>
-</div>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>sg1</span> <span class='op'>&lt;-</span> <span class='va'>sg</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>select</span><span class='op'>(</span><span class='op'>-</span><span class='va'>iso_code</span>,
-         <span class='op'>-</span><span class='va'>location</span><span class='op'>)</span>
-<span class='fu'>DT</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DT/man/datatable.html'>datatable</a></span><span class='op'>(</span><span class='va'>sg1</span>, options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>pageLength <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>
-</code></pre>
-</div>
-</div>
-<p>The above table shows the date, total number of cases, number of new cases per day, the total number of deaths, number of new deaths per day, total number of vaccinations and the total number of people tested for COVID-19 respectively. For various reasons, the data collected contains unknown values, all unknown values will not be shown and are blank. In the table, you can find data on the number of new cases or deaths on a specific date that you want to know.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

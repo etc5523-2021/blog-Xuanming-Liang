@@ -1,7 +1,7 @@
 ---
-title: "Ricky's Blog"
+title: "Blog about COVID-19"
 description: |
-  COVID-19
+  Let's focus on the data about COVID-19
 site: distill::distill_website
 ---
 
