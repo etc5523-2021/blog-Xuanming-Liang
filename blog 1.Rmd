@@ -4,10 +4,22 @@ output:
   distill::distill_article
 ---
 
-```{r echo=FALSE}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      error = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+```
+
+
+
+```{r}
 library(tidyverse)
-library(gt)
 library(DT)
+library(ggplot2)
+library(hrbrthemes)
+library(dplyr)
+library(gganimate)
 ```
 
 
@@ -38,11 +50,11 @@ After screening the data contains the following variables:
 
 Here are some relevant data on COVID-19 in Singapore, including total (new) cases per day, total (new) deaths per day, the total number of people tested and the total number of people vaccinated. 
 
-```{r echo=FALSE}
+```{r}
 dat <- read.csv("data/owid-covid-data.csv")
 ```
 
-```{r echo=FALSE}
+```{r}
 sg <- dat %>% 
   select(iso_code,
          location,
@@ -56,16 +68,55 @@ sg <- dat %>%
   filter(iso_code == "SGP")
 ```
 
-```{r echo=FALSE}
+```{r}
 sg1 <- sg %>% 
   select(-iso_code,
          -location)
 DT::datatable(sg1, options = list(pageLength = 5), caption = "Singapore Daily COVID19 Case")
 ```
 
-The above table shows the date, total number of cases, number of new cases per day, the total number of deaths, number of new deaths per day, total number of vaccinations and the total number of people tested for COVID-19 respectively. For various reasons, the data collected contains unknown values, all unknown values will not be shown and are blank. In the table, you can find data on the number of new cases or deaths on a specific date that you want to know.
+The above tables shows the date, total number of cases, number of new cases per day, the total number of deaths, number of new deaths per day, total number of vaccinations and the total number of people tested for COVID-19 respectively. For various reasons, the data collected contains unknown values, all unknown values will not be shown and are blank. In the table, you can find data on the number of new cases or deaths on a specific date that you want to know.
 
-```{r echo=FALSE}
+```{r}
+sg2 <- sg %>% 
+  select(date,
+         total_cases,
+         new_cases,
+         total_deaths,
+         new_deaths)
 
+sg3 <- sg2 %>% 
+  mutate(date = as.Date(date))
+
+sg4 <- sg3 %>% 
+  pivot_longer(cols = -date,
+               names_to = "Type",
+               values_to = "Count") 
+
+```
+
+```{r}
+sg5 <- sg4 %>% 
+  group_by(date, Type) %>% 
+  summarise(Count = cumsum(Count))
+```
+
+
+```{r}
+q <- sg5 %>% 
+  ggplot(aes(x = date,
+             y = Count,
+             group = Type,
+             color = Type)) +
+  geom_line() +
+  geom_point() +
+  scale_color_viridis_d() +
+  ggtitle("Singapore Daily COVID-19 Cases") +
+  theme_ipsum() +
+  ylab("Number of cases") +
+  transition_reveal(date)
+
+animate(q, nframes = 350,fps = 25,  width = 1200, height = 1000, 
+        renderer = gifski_renderer("sg.gif"))
 ```
 
