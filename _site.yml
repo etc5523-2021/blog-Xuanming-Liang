@@ -5,6 +5,9 @@ description: |
   Let's focus on the data about COVID-19
 output_dir: "_site"
 navbar:
+  logo:
+    image: RL-Logo1.png
+    href: 
   right:
     - text: "Home"
       href: index.html

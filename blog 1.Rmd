@@ -73,7 +73,16 @@ sg1 <- sg %>%
   select(-iso_code,
          -location,
          -population)
-DT::datatable(sg1, options = list(pageLength = 5), caption = "Singapore Daily COVID19 Case")
+DT::datatable(sg1, options = list(pageLength = 5), caption = "Singapore Daily COVID19 Case") %>% 
+  formatStyle(
+  'new_cases',
+  target = 'row',
+  backgroundColor = styleEqual(1426, "#7cddff")) %>% 
+  formatStyle(
+  'new_deaths',
+  target = 'row',
+  backgroundColor = styleEqual(3, "#96b1ff"))
+
 ```
 
 The above tables show the date, the total number of cases, the number of new cases per day, the total number of deaths, the number of new deaths per day, the total number of vaccinations and the total number of COVID-19 tests respectively. Due to individual data not being collected on a daily basis for a reason, the data collected contains unknown values, all unknown values will not be shown and will be blank. In the table, you can find data on the number of new cases or deaths for the specific date you want.
