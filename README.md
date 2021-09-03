@@ -2,7 +2,7 @@
 
 
 This is the blog of Xuanming Liang(Ricky).
-The URL of this blog is [FILL].
+The URL of this blog is https://etc5523-2021.github.io/blog-Xuanming-Liang/.
 
 ## Blog Post 1
 
@@ -10,7 +10,7 @@ This assessment is due Fri Sep 3 2021 11.55PM AEST.
 
 My selected country is Singapore.
 
-The relevant blog post for this assessment is in [FILL].html
+The relevant blog post for this assessment is in https://etc5523-2021.github.io/blog-Xuanming-Liang/.html
 
 - [ ] Selected a country
 - [ ] Website with R markdown 
