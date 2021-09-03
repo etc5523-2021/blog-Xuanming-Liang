@@ -16,10 +16,8 @@ knitr::opts_chunk$set(echo = FALSE,
 ```{r}
 library(tidyverse)
 library(DT)
-library(ggplot2)
-library(hrbrthemes)
 library(dplyr)
-library(gganimate)
+library(knitr)
 ```
 
 
@@ -33,17 +31,18 @@ Data from [Our World in Data](https://ourworldindata.org/coronavirus).
 
 After screening the data contains the following variables:
 
-|**variable**      |**class**  |**description**                                |
-|:-----------------|:----------|:----------------------------------------------|
-|iso_code          | character | Country code as defined by ISO 3166-1 alpha-3 |
-|location          | character | Country name                                  |
-|date              | character | Calendar date                                 |
-|total_cases       | double    | COVID-19 total case                           |
-|new_cases         | double    | COVID-19 daily increase case                  |
-|total_deaths      | double    | COVID-19 total deaths                         |
-|new_deaths        | double    | COVID-19 new daily deaths                     |
-|total_vaccinations| double    | COVID-19 Total number of people vaccinated    |
-|total_tests       | double    | Total number of people tested for COVID-19    |
+|**variable**      |**description**                                         |
+|:-----------------|:-------------------------------------------------------|
+|iso_code          | ISO 3166-1 alpha-3 – three-letter country codes        |
+|location          | Geographical location                                  |
+|date              | Date of observation                                    |
+|total_cases       | Total confirmed cases of COVID-19                      |
+|new_cases         | New confirmed cases of COVID-19                        |
+|total_deaths      | Total deaths attributed to COVID-19                    |
+|new_deaths        | New deaths attributed to COVID-19                      |
+|total_vaccinations| Total number of COVID-19 vaccination doses administered|
+|total_tests       | Total tests for COVID-19                               |
+|population        | Population in 2020                                     |
 
 
 # Analysis & Summary
@@ -64,59 +63,73 @@ sg <- dat %>%
          total_deaths,
          new_deaths,
          total_vaccinations,
-         total_tests) %>% 
+         total_tests,
+         population) %>% 
   filter(iso_code == "SGP")
 ```
 
 ```{r}
 sg1 <- sg %>% 
   select(-iso_code,
-         -location)
+         -location,
+         -population)
 DT::datatable(sg1, options = list(pageLength = 5), caption = "Singapore Daily COVID19 Case")
 ```
 
-The above tables shows the date, total number of cases, number of new cases per day, the total number of deaths, number of new deaths per day, total number of vaccinations and the total number of people tested for COVID-19 respectively. For various reasons, the data collected contains unknown values, all unknown values will not be shown and are blank. In the table, you can find data on the number of new cases or deaths on a specific date that you want to know.
+The above tables show the date, the total number of cases, the number of new cases per day, the total number of deaths, the number of new deaths per day, the total number of vaccinations and the total number of COVID-19 tests respectively. Due to individual data not being collected on a daily basis for a reason, the data collected contains unknown values, all unknown values will not be shown and will be blank. In the table, you can find data on the number of new cases or deaths for the specific date you want.
+
+The data was collected from the 23rd of January 2020, when records were started, until the 29th of August 2021 (the most recent). As can be seen from the table, the highest number of new confirmed cases in a single day was on 20 April 2020, with 1,426 cases, and the highest number of new deaths in a single day was 3, on 28 August 2021.
 
 ```{r}
-sg2 <- sg %>% 
+options(digits = 3)
+summ1 <- sg %>% 
+  filter(date == "2021-08-29") %>% 
+  mutate("Mortality rate" = total_deaths/total_cases*100,
+         "Confirmation rate" = total_cases/population*100) %>% 
   select(date,
-         total_cases,
-         new_cases,
-         total_deaths,
-         new_deaths)
+         'Mortality rate',
+         'Confirmation rate')  
 
-sg3 <- sg2 %>% 
-  mutate(date = as.Date(date))
 
-sg4 <- sg3 %>% 
+summ1_p <- summ1 %>% 
   pivot_longer(cols = -date,
-               names_to = "Type",
-               values_to = "Count") 
+               names_to = "Issue",
+               values_to = "Percentage(%)") 
 
+kable(summ1_p)
 ```
 
-```{r}
-sg5 <- sg4 %>% 
-  group_by(date, Type) %>% 
-  summarise(Count = cumsum(Count))
-```
+As of 29 August 2021, the national diagnosis rate of COVID-19 in Singapore is 1.139% and the mortality rate is 0.082%, which is a testament to the success of Singapore's efforts to combat the epidemic.
 
+# Conclusion
 
-```{r}
-q <- sg5 %>% 
-  ggplot(aes(x = date,
-             y = Count,
-             group = Type,
-             color = Type)) +
-  geom_line() +
-  geom_point() +
-  scale_color_viridis_d() +
-  ggtitle("Singapore Daily COVID-19 Cases") +
-  theme_ipsum() +
-  ylab("Number of cases") +
-  transition_reveal(date)
+The impact of the COVID-19 outbreak has closed schools, closed shops and damaged the economy, while people's lives are at risk. During this difficult time, we hope that we can all work together to overcome the situation, monitor the situation and take precautions. Let's hope for a better tomorrow!
 
-animate(q, nframes = 350,fps = 25,  width = 1200, height = 1000, 
-        renderer = gifski_renderer("sg.gif"))
-```
+# Reference
 
+Hadley Wickham, Romain François, Lionel Henry and Kirill Müller (2021). dplyr: A
+  Grammar of Data Manipulation. R package version 1.0.7.
+  https://CRAN.R-project.org/package=dplyr
+
+Owidbot (2021). Data on COVID-19 (coronavirus) by Our World in Data. GitHub. https://github.com/owid/covid-19-data/tree/master/public/data
+
+R Core Team (2021). R: A language and environment for
+statistical computing. R Foundation for Statistical
+Computing, Vienna, Austria. URL
+https://www.R-project.org/.
+
+Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software,
+  4(43), 1686, https://doi.org/10.21105/joss.01686
+  
+Yihui Xie, Joe Cheng and Xianying Tan (2021). DT: A Wrapper of the JavaScript
+  Library 'DataTables'. R package version 0.18. https://CRAN.R-project.org/package=DT
+  
+Yihui Xie (2021). knitr: A General-Purpose Package for Dynamic Report Generation in
+  R. R package version 1.33.
+
+Yihui Xie (2015) Dynamic Documents with R and knitr. 2nd edition. Chapman and
+  Hall/CRC. ISBN 978-1498716963
+
+Yihui Xie (2014) knitr: A Comprehensive Tool for Reproducible Research in R. In
+  Victoria Stodden, Friedrich Leisch and Roger D. Peng, editors, Implementing
+  Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595
