@@ -3,7 +3,7 @@ title: "Ricky's Blog"
 theme: "ric_theme.css"
 description: |
   Let's focus on the data about COVID-19
-output_dir: "Docs"
+output_dir: "docs"
 navbar:
   logo:
     image: RL-Logo1.png
