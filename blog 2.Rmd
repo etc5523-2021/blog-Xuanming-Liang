@@ -1,0 +1,267 @@
+---
+title: "The COVID-19 in Romania"
+output: 
+  distill::distill_article
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      error = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+```
+
+
+
+```{r}
+library(tidyverse)
+library(DT)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(ggridges)
+library(xts)
+library(dygraphs)
+library(gganimate)
+library(gifski)
+library(hrbrthemes)
+library(viridis)
+```
+
+
+![](Romania1.jpg){width=50}
+
+# Introduction
+
+Romania is a country located in the Balkan Peninsula in the southeast of Europe, with a land area of 238,391 km², the largest country in South-Eastern Europe and the twelfth largest in Europe. It has a population of 19,127,772. Its economy is ranked in the upper-middle class among the Central and Eastern European member states of the European Union.
+
+
+# Data description
+
+Data from [Our World in Data](https://ourworldindata.org/coronavirus).
+
+After screening the data contains the following variables:
+
+|**variable**      |**description**                                         |
+|:-----------------|:-------------------------------------------------------|
+|iso_code          | ISO 3166-1 alpha-3 – three-letter country codes        |
+|location          | Geographical location                                  |
+|date              | Date of observation                                    |
+|total_cases       | Total confirmed cases of COVID-19                      |
+|new_cases         | New confirmed cases of COVID-19                        |
+|total_deaths      | Total deaths attributed to COVID-19                    |
+|new_deaths        | New deaths attributed to COVID-19                      |
+|total_vaccinations| Total number of COVID-19 vaccination doses administered|
+|people_vaccinated | Total number of people who received at least one vaccine dose |
+|people_fully_vaccinated| Total number of people who received all doses prescribed by the vaccination protocol|
+|total_tests       | Total tests for COVID-19                               |
+
+
+
+# Date story 1
+
+
+```{r}
+dat <- read.csv("data/owid-covid-data.csv")
+dat$date = as.Date(dat$date, "%Y-%m-%d")
+```
+
+```{r}
+rou <- dat %>% 
+  select(iso_code,
+         location,
+         date,
+         total_cases,
+         new_cases,
+         total_deaths,
+         new_deaths,
+         total_vaccinations,
+         total_tests) %>% 
+  filter(iso_code == "ROU")
+```
+
+The tables below show the date, the total number of cases, the number of new cases per day, the total number of deaths, the number of new deaths per day, the total number of vaccinations and the total number of COVID-19 tests respectively. In the table, you can find the data you want for a specific date.
+
+These data were recorded from 26 February 2020 and collected up to 29 August 2021 (the most recent). As you can see from the table, the highest number of new confirmed cases on a single day was on 18 November 2020, with 10,269 cases, and the highest number of new deaths on a single day was on 29 June 2021, with 294 cases.
+
+```{r}
+rou1 <- rou %>% 
+  select(-iso_code,
+         -location)
+DT::datatable(rou1, options = list(pageLength = 5), caption = "Romania Daily COVID19 Case") %>% 
+  formatStyle(
+  'new_cases',
+  target = 'row',
+  backgroundColor = styleEqual(10269, "#7cddff")) %>% 
+  formatStyle(
+  'new_deaths',
+  target = 'row',
+  backgroundColor = styleEqual(294, "#96b1ff"))
+```
+
+```{r}
+rou_dy <- rou %>%
+  select(date, new_cases, new_deaths)
+
+
+rou_dy1 <- rou_dy %>%
+  xts(order.by = rou_dy$date)
+
+dygraph(rou_dy1, main = "The daily cases and deaths") %>%
+  dyAxis("y",label = "new cases") %>%
+  dyAxis("y2", label = "new deaths") %>%
+  dySeries("new_cases", 
+           axis = "y", 
+           label = "New cases",
+           stepPlot = TRUE, 
+           fillGraph = TRUE, 
+           color = "blue") %>%
+  dySeries("new_deaths", 
+           axis = "y2", 
+           stepPlot = TRUE, 
+           color = "red") %>%
+  dyOptions(includeZero = TRUE, 
+            axisLineColor = "navy", 
+            gridLineColor = "lightblue") %>%
+  dyRangeSelector() %>%
+  dyHighlight(highlightCircleSize = 5, 
+              highlightSeriesBackgroundAlpha = 0.2,
+              hideOnMouseOut = FALSE) %>%
+  dyLegend(show = "always", hideOnMouseOut = FALSE)
+```
+
+As can be seen from the graph above, after 25 March 2021, the number of new cases per day starts to fall, proving that Romania has contained the spread of the epidemic, and also that after 7 July 2021, the number of new deaths per day falls, proving that the vaccine is working and that Romania has effectively contained the virus from harming people.
+
+
+```{r}
+rou_v <- dat %>% 
+  select(iso_code,
+         location,
+         date,
+         people_vaccinated,
+         people_fully_vaccinated) %>% 
+  filter(iso_code == "ROU")
+rou_v[is.na(rou_v)] <- 0
+```
+
+```{r}
+rou_v1 <- rou_v %>% 
+  pivot_longer(cols = c(-iso_code,
+                        -location,
+                        -date),
+               names_to = "type",
+               values_to = "count") %>% 
+  select(-iso_code,
+         -location)
+```
+
+
+```{r}
+ggplot(rou_v1, aes(x = date, 
+                 y = count,
+                 group = type, 
+                 color = type)) +
+    geom_line() +
+    scale_color_viridis(discrete = TRUE) +
+    ggtitle("Vaccination in Romania") +
+    theme_ipsum() +
+    ylab("Number of vaccinations")
+```
+
+
+As you can see from the graph above, the number of people getting vaccinated is on the rise, with people starting to get vaccinated from January 2021 onwards, and a proportion of people starting to get their second dose around February 2021. By August 2021, nearly a quarter of the country's population will have been vaccinated.
+
+
+# Date story 2
+
+```{r}
+c <- dat %>% 
+  select(iso_code,
+         location,
+         date,
+         total_cases) %>% 
+  filter(iso_code %in% c("SGP",
+                         "ROU"))
+```
+
+```{r}
+ggplot(c, aes(x = date, y = total_cases, fill = location))+
+  geom_area()+
+  facet_wrap(~location, scales = "free")+
+  scale_fill_brewer(labels = c("Total number of confirmed cases in Singapore",
+                               "Total number of confirmed cases in Romania"),
+                    palette = "Set1")+
+  theme_bw()+
+  geom_hline(yintercept = 70, linetype="dotted")+
+  labs(title = "",
+       x = "",
+       y = "Number of peopel",
+       fill = "")+
+  theme(legend.position = "bottom") +
+  transition_reveal(date)
+```
+
+As you can see in the graph above, the number of confirmed cases in Singapore starts to rise around March 2020, and by around May 2020, the number of confirmed cases starts to rise sharply until around September 2020 when the upward trend starts to slow down. In Romania, on the other hand, the number of confirmed diagnoses starts to rise slowly around April 2020 and only starts to accelerate around October 2020. The upward trend continues until around June 2021, when it slows down.
+
+As we can see from the units on the y-axis, the number of confirmed cases in Romania is much larger than the number of confirmed cases in Singapore, which factors in the difference in the total population, but in terms of percentage, Singapore has much better control of the epidemic than Romania. In addition, the difference in policy between the two countries is a result of the fact that Singapore has a quarantine policy, whereas Romania, like other European countries, has a herd immunisation policy. This is why the above results were obtained.
+
+
+
+# Reference
+
+Bob Rudis (2020). hrbrthemes: Additional Themes, Theme Components and
+  Utilities for 'ggplot2'. R package version 0.8.0.
+  https://CRAN.R-project.org/package=hrbrthemes
+
+Claus O. Wilke (2021). ggridges: Ridgeline Plots in 'ggplot2'. R package
+  version 0.5.3. https://CRAN.R-project.org/package=ggridges
+
+Dan Vanderkam, JJ Allaire, Jonathan Owen, Daniel Gromer and Benoit
+  Thieurmel (2018). dygraphs: Interface to 'Dygraphs' Interactive Time
+  Series Charting Library. R package version 1.1.1.6.
+  https://CRAN.R-project.org/package=dygraphs
+
+Hadley Wickham, Romain François, Lionel Henry and Kirill Müller (2021). dplyr: A
+  Grammar of Data Manipulation. R package version 1.0.7.
+  https://CRAN.R-project.org/package=dplyr
+
+H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag
+  New York, 2016.
+
+Jeffrey A. Ryan and Joshua M. Ulrich (2020). xts: eXtensible Time Series.
+  R package version 0.12.1. https://CRAN.R-project.org/package=xts
+
+Jeroen Ooms (2021). gifski: Highest Quality GIF Encoder. R package
+  version 1.4.3-1. https://CRAN.R-project.org/package=gifski
+
+Owidbot (2021). Data on COVID-19 (coronavirus) by Our World in Data. GitHub. https://github.com/owid/covid-19-data/tree/master/public/data
+
+R Core Team (2021). R: A language and environment for
+statistical computing. R Foundation for Statistical
+Computing, Vienna, Austria. URL
+https://www.R-project.org/.
+
+Simon Garnier, Noam Ross, Robert Rudis, Antônio P. Camargo, Marco
+  Sciaini, and Cédric Scherer (2021). Rvision - Colorblind-Friendly Color
+  Maps for R. R package version 0.6.1.
+
+Thomas Lin Pedersen and David Robinson (2020). gganimate: A Grammar of
+  Animated Graphics. R package version 1.0.7.
+  https://CRAN.R-project.org/package=gganimate
+
+Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software,
+  4(43), 1686, https://doi.org/10.21105/joss.01686
+  
+Yihui Xie, Joe Cheng and Xianying Tan (2021). DT: A Wrapper of the JavaScript
+  Library 'DataTables'. R package version 0.18. https://CRAN.R-project.org/package=DT
+  
+Yihui Xie (2021). knitr: A General-Purpose Package for Dynamic Report Generation in
+  R. R package version 1.33.
+
+Yihui Xie (2015) Dynamic Documents with R and knitr. 2nd edition. Chapman and
+  Hall/CRC. ISBN 978-1498716963
+
+Yihui Xie (2014) knitr: A Comprehensive Tool for Reproducible Research in R. In
+  Victoria Stodden, Friedrich Leisch and Roger D. Peng, editors, Implementing
+  Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595

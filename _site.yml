@@ -12,6 +12,8 @@ navbar:
       href: index.html
     - text: "Blog 1"
       href: blog-1.html
+    - text: "Blog 2"
+      href: blog-2.html
     - icon: fab fa-github
       href: https://github.com/etc5523-2021/blog-Xuanming-Liang
   search: true
