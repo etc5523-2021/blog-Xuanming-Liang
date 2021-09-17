@@ -30,7 +30,7 @@ library(viridis)
 ```
 
 
-![](Romania1.jpg){width=50}
+![](Romania2.jpg){width=50}
 
 # Introduction
 
@@ -99,6 +99,8 @@ DT::datatable(rou1, options = list(pageLength = 5), caption = "Romania Daily COV
   target = 'row',
   backgroundColor = styleEqual(294, "#96b1ff"))
 ```
+
+![](Romania1.jpg){width=50}
 
 ```{r}
 rou_dy <- rou %>%
