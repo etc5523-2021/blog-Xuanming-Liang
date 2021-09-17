@@ -10,7 +10,7 @@ This assessment is due Fri Sep 3 2021 11.55PM AEST.
 
 My selected country is Singapore.
 
-The relevant blog post for this assessment is in https://etc5523-2021.github.io/blog-Xuanming-Liang/.html
+The relevant blog post for this assessment is in https://etc5523-2021.github.io/blog-Xuanming-Liang/blog-1.html
 
 - [ ] Selected a country
 - [ ] Website with R markdown 
@@ -28,7 +28,7 @@ This assessment is due Fri Sep 17 2021 11.55PM AEST.
 
 My selected country is Romania.
 
-The relevant blog post for this assessment is in [FILL].html
+The relevant blog post for this assessment is in https://etc5523-2021.github.io/blog-Xuanming-Liang/blog-2.html
 
 - [ ] Selected a new country
 - [ ] Data Story 1
